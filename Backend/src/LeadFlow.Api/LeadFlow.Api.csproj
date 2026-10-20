@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\LeadFlow.Service\LeadFlow.Service.csproj" />
+    <ProjectReference Include="..\LeadFlow.Infrastructure\LeadFlow.Infrastructure.csproj" />
+    <ProjectReference Include="..\LeadFlow.Application\LeadFlow.Application.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
