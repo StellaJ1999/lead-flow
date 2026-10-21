@@ -1,4 +1,5 @@
 ﻿using LeadFlow.Infrastructure.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,10 @@ public static class InfrastructureInitializer
 
         services.AddDbContext<AppIdentityDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddDefaultTokenProviders();
 
         return services;
     }
