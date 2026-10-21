@@ -1,4 +1,4 @@
-﻿using LeadFlow.Domain.Entites;
+﻿using LeadFlow.Domain.Entities;
 using LeadFlow.Domain.Enums;
 
 namespace LeadFlow.Domain.Entities;

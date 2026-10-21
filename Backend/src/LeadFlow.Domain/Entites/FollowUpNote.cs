@@ -1,5 +1,5 @@
 ﻿
-namespace LeadFlow.Domain.Entites;
+namespace LeadFlow.Domain.Entities;
 
 public class FollowUpNote
 {
