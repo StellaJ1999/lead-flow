@@ -4,6 +4,15 @@
     <ProjectReference Include="..\LeadFlow.Domain\LeadFlow.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\Security\" />
+    <Folder Include="Abstractions\Services\" />
+    <Folder Include="Abstractions\Repositories\" />
+    <Folder Include="DTOs\Leads\" />
+    <Folder Include="DTOs\FollowUps\" />
+    <Folder Include="DTOs\Auth\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

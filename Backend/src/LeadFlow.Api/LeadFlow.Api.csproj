@@ -6,6 +6,12 @@
     <ProjectReference Include="..\LeadFlow.Application\LeadFlow.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="ErrorHandling\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
