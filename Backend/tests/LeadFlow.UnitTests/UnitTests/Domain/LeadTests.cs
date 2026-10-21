@@ -7,7 +7,7 @@ namespace LeadFlow.UnitTests.Domain;
 public class LeadTests
 {
     private static Lead CreateLead() =>
-        new("Anna Andersson", "anna@example.com", null, "Vill veta mer.");
+        new("Anna Andersson", "anna@example.com", null, "Would like more information.");
 
     [Fact]
     public void Constructor_StartsWithNewStatusAndNoOutcome()
@@ -146,19 +146,19 @@ public class LeadTests
         var lead = CreateLead();
         var before = DateTimeOffset.UtcNow;
 
-        var first = lead.AddFollowUpNote("Ringde kunden.", "user-1");
-        var second = lead.AddFollowUpNote("Bokade ett möte.", "user-2");
+        var first = lead.AddFollowUpNote("Called the customer.", "user-1");
+        var second = lead.AddFollowUpNote("Scheduled a meeting.", "user-2");
 
         var after = DateTimeOffset.UtcNow;
 
         Assert.Equal(2, lead.FollowUpNotes.Count);
 
-        Assert.Equal("Ringde kunden.", first.Text);
+        Assert.Equal("Called the customer.", first.Text);
         Assert.Equal("user-1", first.UserId);
         Assert.Equal(lead.Id, first.LeadId);
         Assert.InRange(first.CreatedAt, before, after);
 
-        Assert.Equal("Bokade ett möte.", second.Text);
+        Assert.Equal("Scheduled a meeting.", second.Text);
         Assert.Equal("user-2", second.UserId);
         Assert.Equal(lead.Id, second.LeadId);
         Assert.InRange(second.CreatedAt, before, after);
@@ -167,7 +167,7 @@ public class LeadTests
     [Theory]
     [InlineData("", "user-1")]
     [InlineData("   ", "user-1")]
-    [InlineData("Ringde kunden.", "")]
+    [InlineData("Called the customer.", "")]
     public void AddFollowUpNote_WithMissingTextOrAuthor_Throws(
         string text,
         string userId)
