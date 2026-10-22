@@ -5,12 +5,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Security\" />
     <Folder Include="Abstractions\Services\" />
     <Folder Include="Abstractions\Repositories\" />
     <Folder Include="DTOs\Leads\" />
     <Folder Include="DTOs\FollowUps\" />
-    <Folder Include="DTOs\Auth\" />
   </ItemGroup>
 
   <PropertyGroup>
