@@ -14,13 +14,16 @@ public sealed class AppIdentityDbContext
     {
     }
 
+    // Gör entiteterna tillgängliga för frågor och sparande via EF Core.
     public DbSet<Lead> Leads => Set<Lead>();
     public DbSet<FollowUpNote> FollowUpNotes => Set<FollowUpNote>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        // Registrerar Identity-tabeller och deras relationer.
         base.OnModelCreating(builder);
 
+        // Letar efter IEntityTypeConfiguration<T> i Infrastructure.
         builder.ApplyConfigurationsFromAssembly(
             typeof(AppIdentityDbContext).Assembly);
     }

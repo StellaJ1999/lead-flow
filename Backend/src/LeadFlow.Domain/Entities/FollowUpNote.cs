@@ -21,8 +21,10 @@ public class FollowUpNote
             throw new ArgumentException("Author ID is required.", nameof(userId));
 
         Id = Guid.NewGuid();
+        // Sparar vilket lead anteckningen tillhör.
         LeadId = leadId;
         Text = text.Trim();
+        // Sparar författarens ID.
         UserId = userId;
         CreatedAt = DateTimeOffset.UtcNow;
     }

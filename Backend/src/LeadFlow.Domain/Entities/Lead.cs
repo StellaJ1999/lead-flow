@@ -96,7 +96,10 @@ public class Lead
 
     public FollowUpNote AddFollowUpNote(string text, string userId)
     {
+        // Leadets eget ID skickas med automatiskt.
         var note = new FollowUpNote(Id, text, userId);
+
+        // Anteckningen läggs till i leadets interna samling.
         _followUpNotes.Add(note);
 
         return note;

@@ -17,9 +17,11 @@ public static class InfrastructureInitializer
             ?? throw new InvalidOperationException(
                 "Connection string 'SqlServer' is missing.");
 
+        // Registrerar kontexten och väljer SQL Server som databasleverantör.
         services.AddDbContext<AppIdentityDbContext>(options =>
             options.UseSqlServer(connectionString));
 
+        // Identity använder samma kontext för användare och roller.
         services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddDefaultTokenProviders();
