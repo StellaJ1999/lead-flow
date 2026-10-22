@@ -5,4 +5,5 @@ namespace LeadFlow.Application.Abstractions.Security;
 public interface IAuthService
 {
     Task<bool> LoginAsync(LoginRequest request);
+    Task LogoutAsync();
 }

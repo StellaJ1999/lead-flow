@@ -23,4 +23,8 @@ public sealed class AuthService(UserManager<IdentityUser> userManager, SignInMan
 
         return result.Succeeded;
     }
+    public async Task LogoutAsync()
+    {
+        await signInManager.SignOutAsync();
+    }
 }

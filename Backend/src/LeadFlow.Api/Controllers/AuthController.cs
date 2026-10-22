@@ -1,6 +1,7 @@
 ﻿using LeadFlow.Application.Abstractions.Security;
 using LeadFlow.Application.DTOs.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LeadFlow.Api.Controllers;
@@ -10,6 +11,7 @@ namespace LeadFlow.Api.Controllers;
 public sealed class AuthController(IAuthService authService)
     : ControllerBase
 {
+
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(
@@ -25,6 +27,14 @@ public sealed class AuthController(IAuthService authService)
             });
         }
 
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout() 
+    {
+        await authService.LogoutAsync();
         return NoContent();
     }
 }
