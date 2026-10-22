@@ -1,4 +1,6 @@
-﻿using LeadFlow.Infrastructure.Identity.Data;
+﻿using LeadFlow.Application.Abstractions.Security;
+using LeadFlow.Infrastructure.Identity.Data;
+using LeadFlow.Infrastructure.Identity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +27,8 @@ public static class InfrastructureInitializer
         services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddDefaultTokenProviders();
-
+        
+        services.AddScoped<IAuthService, AuthService>();
         return services;
     }
 }
