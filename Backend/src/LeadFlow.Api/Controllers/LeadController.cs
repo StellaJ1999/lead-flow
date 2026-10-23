@@ -1,12 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LeadFlow.Application.Abstractions.Services;
+using LeadFlow.Application.DTOs.Leads;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace LeadFlow.Api.Controllers
+namespace LeadFlow.Api.Controllers;
+
+[ApiController]
+[Route("api/leads")]
+[Authorize]
+public sealed class LeadsController(ILeadService leadService)
+    : ControllerBase
 {
-    public class LeadController : Controller
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Create(
+        [FromBody] CreateLeadRequest request,
+        CancellationToken cancellationToken)
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        var id = await leadService.CreateAsync(
+            request,
+            cancellationToken);
+
+        return StatusCode(
+            StatusCodes.Status201Created,
+            new { id });
     }
 }
