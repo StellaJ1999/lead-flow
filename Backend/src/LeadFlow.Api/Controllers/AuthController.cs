@@ -3,6 +3,7 @@ using LeadFlow.Application.DTOs.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LeadFlow.Api.Controllers;
 
@@ -36,5 +37,16 @@ public sealed class AuthController(IAuthService authService)
     {
         await authService.LogoutAsync();
         return NoContent();
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult GetCurrentUser()
+    {
+        return Ok(new
+        {
+            id = User.FindFirstValue(ClaimTypes.NameIdentifier),
+            email = User.FindFirstValue(ClaimTypes.Email)
+        });
     }
 }
