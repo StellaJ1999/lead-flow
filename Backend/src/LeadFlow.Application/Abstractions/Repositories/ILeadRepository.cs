@@ -7,4 +7,6 @@ public interface ILeadRepository
     Task AddAsync(
         Lead lead,
         CancellationToken cancellationToken);
+    Task<IReadOnlyList<Lead>> GetAllAsync(
+    CancellationToken cancellationToken);
 }

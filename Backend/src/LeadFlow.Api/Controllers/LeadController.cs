@@ -11,6 +11,16 @@ namespace LeadFlow.Api.Controllers;
 public sealed class LeadsController(ILeadService leadService)
     : ControllerBase
 {
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(
+    CancellationToken cancellationToken)
+    {
+        var leads = await leadService.GetAllAsync(cancellationToken);
+
+        return Ok(leads);
+    }
+
     [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Create(
@@ -25,4 +35,6 @@ public sealed class LeadsController(ILeadService leadService)
             StatusCodes.Status201Created,
             new { id });
     }
+
+
 }

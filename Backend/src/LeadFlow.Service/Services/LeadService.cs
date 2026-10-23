@@ -22,4 +22,19 @@ public sealed class LeadService(ILeadRepository repository)
 
         return lead.Id;
     }
+
+    public async Task<IReadOnlyList<LeadResponse>> GetAllAsync(
+        CancellationToken cancellationToken)
+    {
+        var leads = await repository.GetAllAsync(cancellationToken);
+
+        return leads.Select(lead => new LeadResponse(
+            lead.Id,
+            lead.Name,
+            lead.Email,
+            lead.Company,
+            lead.Status,
+            lead.CreatedAt))
+            .ToList();
+    }
 }

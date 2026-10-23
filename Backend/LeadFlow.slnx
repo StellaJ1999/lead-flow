@@ -7,6 +7,7 @@
     <Project Path="src/LeadFlow.Service/LeadFlow.Service.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <File Path="src/LeadFlow.Service/Services/LeadService.cs" />
     <Project Path="tests/LeadFlow.UnitTests/LeadFlow.UnitTests.csproj" />
   </Folder>
 </Solution>
