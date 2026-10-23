@@ -1,6 +1,9 @@
-﻿using LeadFlow.Application.Abstractions.Security;
+﻿using LeadFlow.Application.Abstractions.Repositories;
+using LeadFlow.Application.Abstractions.Security;
+using LeadFlow.Application.Abstractions.Services;
 using LeadFlow.Infrastructure.Identity.Data;
 using LeadFlow.Infrastructure.Identity.Services;
+using LeadFlow.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +32,8 @@ public static class InfrastructureInitializer
             .AddDefaultTokenProviders();
         
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ILeadRepository, LeadRepository>();
+
         return services;
     }
 }
