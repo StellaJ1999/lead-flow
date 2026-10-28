@@ -27,13 +27,14 @@ public sealed class LeadsController(ILeadService leadService)
         [FromBody] CreateLeadRequest request,
         CancellationToken cancellationToken)
     {
-        var id = await leadService.CreateAsync(
-            request,
-            cancellationToken);
+        await leadService.CreateAsync(request, cancellationToken);
 
         return StatusCode(
             StatusCodes.Status201Created,
-            new { id });
+            new
+            {
+                message = "Your interest has been registered."
+            });
     }
 
 
