@@ -2,7 +2,7 @@ import {
   api,
   clearCsrfToken,
   refreshCsrfToken,
-} from "../lib/api";
+} from "../../../lib/api";
 
 export type CurrentUser = {
   id: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { ApiError } from "../lib/api";
+import { ApiError } from "../../../lib/api";
 import {
   getCurrentUser,
   login,

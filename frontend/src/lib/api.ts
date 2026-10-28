@@ -12,6 +12,7 @@ export class ApiError extends Error {
   constructor(
     public readonly status: number,
     message: string,
+    public readonly validationErrors?: Record<string, string[]>,
   ) {
     super(message);
     this.name = "ApiError";
@@ -105,14 +106,17 @@ export async function api<T = void>(
       ? Object.values(problem.errors).flat().join(" ")
       : undefined;
 
-    throw new ApiError(
-      response.status,
-      problem?.message ||
-        validationMessage ||
-        problem?.title ||
-        `Anropet misslyckades (${response.status}).`,
-    );
-  }
+      throw new ApiError(
+        response.status,
+        problem?.message ||
+          validationMessage ||
+          problem?.title ||
+          `Anropet misslyckades (${response.status}).`,
+          problem?.errors,
+      );
+  
+  
+    }
 
   if (text && data === undefined) {
     throw new ApiError(
