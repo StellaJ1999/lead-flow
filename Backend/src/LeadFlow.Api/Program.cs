@@ -2,12 +2,14 @@ using LeadFlow.Application.Abstractions.Services;
 using LeadFlow.Infrastructure;
 using LeadFlow.Infrastructure.Identity.Data;
 using LeadFlow.Service.Services;
+using LeadFlow.Api.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSecurityConfiguration();
+
 builder.Services.AddScoped<ILeadService, LeadService>();
 
 var app = builder.Build();
@@ -21,6 +23,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace LeadFlow.Api.Controllers;
 
@@ -47,6 +48,24 @@ public sealed class AuthController(IAuthService authService)
         {
             id = User.FindFirstValue(ClaimTypes.NameIdentifier),
             email = User.FindFirstValue(ClaimTypes.Email)
+        });
+    }
+
+    [AllowAnonymous]
+    [HttpGet("csrf")]
+
+    //Svaret cachelagras inte.
+    [ResponseCache(
+    NoStore = true,
+    Location = ResponseCacheLocation.None)]
+    public IActionResult GetCsrfToken(
+    [FromServices] IAntiforgery antiforgery)
+    {
+        var tokens = antiforgery.GetAndStoreTokens(HttpContext);
+        //Skapar tokeninformationen och ser till att antiforgery-cookien finns i svaret när det behövs.
+        return Ok(new
+        {
+            token = tokens.RequestToken
         });
     }
 }
