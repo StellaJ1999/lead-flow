@@ -3,7 +3,11 @@ import { api } from "@/lib/api";
 export type CreateLeadRequest = {
   name: string;
   email: string;
-  company?: string;
+  company: string | null;
+  message: string;
+};
+
+export type CreateLeadResponse = {
   message: string;
 };
 
@@ -22,8 +26,8 @@ export function getLeads(): Promise<LeadResponse[]> {
 
 export function createLead(
   request: CreateLeadRequest,
-): Promise<{ id: string }> {
-  return api<{ id: string }>("/api/leads", {
+): Promise<CreateLeadResponse> {
+  return api<CreateLeadResponse>("/api/leads", {
     method: "POST",
     body: request,
   });
