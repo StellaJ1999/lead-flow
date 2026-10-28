@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="ErrorHandling\" />
-    <Folder Include="Security\" />
   </ItemGroup>
 
   <ItemGroup>
