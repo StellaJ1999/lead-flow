@@ -37,7 +37,10 @@ export function LoginForm() {
         if (!active) {
           return;
         }
-
+        
+        // Återställ eventuell navigering från föregående inloggning.
+        setRedirecting(false);
+        
         const isAnonymous =
           error instanceof ApiError && error.status === 401;
 
