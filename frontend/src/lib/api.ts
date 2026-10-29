@@ -19,6 +19,13 @@ export class ApiError extends Error {
   }
 }
 
+export class ApiNetworkError extends Error {
+  constructor() {
+    super("Det gick inte att ansluta.");
+    this.name = "ApiNetworkError";
+  }
+}
+
 let csrfToken: string | undefined;
 
 export function clearCsrfToken(): void {
