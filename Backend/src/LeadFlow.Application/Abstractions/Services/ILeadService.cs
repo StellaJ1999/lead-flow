@@ -9,4 +9,8 @@ public interface ILeadService
         CancellationToken cancellationToken);
     Task<IReadOnlyList<LeadResponse>> GetAllAsync(
     CancellationToken cancellationToken);
+
+    Task<LeadDetailsResponse?> GetByIdAsync(
+    Guid id,
+    CancellationToken cancellationToken);
 }

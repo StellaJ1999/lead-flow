@@ -37,5 +37,27 @@ public sealed class LeadsController(ILeadService leadService)
             });
     }
 
+    [HttpGet("{id:guid}")]
+    [ResponseCache(
+    NoStore = true,
+    Location = ResponseCacheLocation.None)]
+    public async Task<IActionResult> GetById(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var lead = await leadService.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (lead is null)
+        {
+            return NotFound(new
+            {
+                message = "Lead not found."
+            });
+        }
+
+        return Ok(lead);
+    }
 
 }

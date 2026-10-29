@@ -37,4 +37,27 @@ public sealed class LeadService(ILeadRepository repository)
             lead.CreatedAt))
             .ToList();
     }
+
+    public async Task<LeadDetailsResponse?> GetByIdAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var lead = await repository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (lead is null)
+        {
+            return null;
+        }
+
+        return new LeadDetailsResponse(
+            lead.Id,
+            lead.Name,
+            lead.Email,
+            lead.Company,
+            lead.Message,
+            lead.Status,
+            lead.CreatedAt);
+    }
 }

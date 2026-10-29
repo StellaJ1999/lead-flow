@@ -24,4 +24,15 @@ public sealed class LeadRepository(AppIdentityDbContext context)
             .OrderByDescending(lead => lead.CreatedAt)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<Lead?> GetByIdAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        return await context.Leads
+            .AsNoTracking()
+            .SingleOrDefaultAsync(
+                lead => lead.Id == id,
+                cancellationToken);
+    }
 }
