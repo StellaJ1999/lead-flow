@@ -36,8 +36,19 @@ export function createLead(
   });
 }
 
+export type LeadOutcome = 0 | 1;
+
+export type FollowUpNoteResponse = {
+  id: string;
+  text: string;
+  author: string;
+  createdAt: string;
+};
+
 export type LeadDetailsResponse = LeadResponse & {
   message: string;
+  outcome: LeadOutcome | null;
+  followUpNotes: FollowUpNoteResponse[];
 };
 
 export function getLeadById(

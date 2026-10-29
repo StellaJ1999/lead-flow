@@ -1,6 +1,7 @@
 "use client";
 
 import { DeleteLeadButton } from "./DeleteLeadButton";
+import { FollowUpNotes } from "./FollowUpNotes";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -116,6 +117,19 @@ export function LeadDetails() {
               </dd>
             </div>
 
+            {lead.status === 2 && (
+            <div>
+                <dt className="font-semibold">Outcome</dt>
+                <dd>
+                {lead.outcome === 0
+                    ? "Customer"
+                    : lead.outcome === 1
+                    ? "Not interested"
+                    : "Not specified"}
+                </dd>
+            </div>
+            )}
+
             <div>
               <dt className="font-semibold">Skapad</dt>
               <dd>
@@ -133,6 +147,7 @@ export function LeadDetails() {
               {lead.message}
             </p>
           </div>
+          <FollowUpNotes notes={lead.followUpNotes} />
           <DeleteLeadButton
                 leadId={lead.id}
                 leadName={lead.name}
