@@ -1,158 +1,168 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
-import { ApiError } from "../../../lib/api";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+
+import { ApiError } from "@/lib/api";
+
 import {
+  getAuthErrorMessage,
   getCurrentUser,
   login,
-  logout,
-  type CurrentUser,
 } from "../lib/auth";
 
 export function LoginForm() {
-  const [user, setUser] = useState<CurrentUser | null>(null);
-  const [busy, setBusy] = useState(true);
+  const router = useRouter();
+  const submitting = useRef(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const [checking, setChecking] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     let active = true;
 
     getCurrentUser()
-      .then(currentUser => {
+      .then(() => {
         if (active) {
-          setUser(currentUser);
+          setRedirecting(true);
+          router.replace("/leads");
         }
       })
       .catch(error => {
-        // 401 är förväntat när besökaren inte är inloggad.
+        if (!active) {
+          return;
+        }
+
         const isAnonymous =
           error instanceof ApiError && error.status === 401;
 
-        if (active && !isAnonymous) {
-          setError("Kunde inte kontrollera inloggningen.");
+        if (!isAnonymous) {
+          setError(
+            getAuthErrorMessage(
+              error,
+              "Kunde inte kontrollera sessionen. Försök logga in igen.",
+            ),
+          );
         }
       })
       .finally(() => {
         if (active) {
-          setBusy(false);
+          setChecking(false);
         }
       });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [router]);
 
-  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const form = event.currentTarget;
-    const data = new FormData(form);
+    if (submitting.current || redirecting) {
+      return;
+    }
 
-    const email = String(data.get("email") ?? "");
-    const password = String(data.get("password") ?? "");
+    if (!email.trim() || password.length === 0) {
+      setError("Ange e-postadress och lösenord.");
+      return;
+    }
 
+    submitting.current = true;
     setBusy(true);
     setError("");
 
     try {
       await login(email, password);
-      form.reset();
 
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
+      setPassword("");
+      setRedirecting(true);
+
+      router.replace("/leads");
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Inloggningen misslyckades.",
-      );
+      setError(getAuthErrorMessage(error));
 
-      // Login kan ha lyckats även om nästa tokenhämtning misslyckades.
-      try {
-        setUser(await getCurrentUser());
-      } catch {
-        setUser(null);
-      }
+      // E-postadressen behålls.
+      setPassword("");
     } finally {
+      submitting.current = false;
       setBusy(false);
     }
   }
 
-  async function handleLogout() {
-    setBusy(true);
-    setError("");
-
-    try {
-      await logout();
-      setUser(null);
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Utloggningen misslyckades.",
-      );
-    } finally {
-      setBusy(false);
-    }
+  if (checking || redirecting) {
+    return (
+      <p role="status" className="mt-6">
+        {redirecting ? "Öppnar leadlistan…" : "Kontrollerar session…"}
+      </p>
+    );
   }
 
   return (
-    <section className="mt-6 space-y-4">
-      {error && <p role="alert">{error}</p>}
-
-      {user ? (
-        <>
-          <p>Inloggad som {user.email}</p>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={busy}
-            className="rounded border px-4 py-2"
-          >
-            Logga ut
-          </button>
-        </>
-      ) : (
-        <form
-          onSubmit={handleLogin}
-          aria-busy={busy}
-          className="space-y-4"
+    <form
+      onSubmit={handleSubmit}
+      aria-busy={busy}
+      aria-describedby={error ? "login-error" : undefined}
+      className="mt-6 space-y-5"
+    >
+      {error && (
+        <p
+          id="login-error"
+          role="alert"
+          className="rounded border border-red-700 bg-red-50 p-3 text-red-800"
         >
-          <label className="block">
-            E-post
-            <input
-              name="email"
-              type="email"
-              autoComplete="username"
-              required
-              disabled={busy}
-              className="mt-1 block w-full rounded border p-2"
-            />
-          </label>
-
-          <label className="block">
-            Lösenord
-            <input
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              disabled={busy}
-              className="mt-1 block w-full rounded border p-2"
-            />
-          </label>
-
-          <button
-            type="submit"
-            disabled={busy}
-            className="rounded border px-4 py-2"
-          >
-            {busy ? "Vänta…" : "Logga in"}
-          </button>
-        </form>
+          {error}
+        </p>
       )}
-    </section>
+
+      <div>
+        <label htmlFor="login-email" className="block font-medium">
+          E-post
+        </label>
+
+        <input
+          id="login-email"
+          name="email"
+          type="email"
+          autoComplete="username"
+          required
+          value={email}
+          onChange={event => setEmail(event.target.value)}
+          disabled={busy}
+          className="mt-1 block w-full rounded border p-3 focus:outline-2 focus:outline-offset-2 focus:outline-blue-700"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="login-password" className="block font-medium">
+          Lösenord
+        </label>
+
+        <input
+          id="login-password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={event => setPassword(event.target.value)}
+          disabled={busy}
+          className="mt-1 block w-full rounded border p-3 focus:outline-2 focus:outline-offset-2 focus:outline-blue-700"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={busy}
+        className="w-full rounded bg-blue-700 px-5 py-3 font-semibold text-white focus:outline-2 focus:outline-offset-2 focus:outline-blue-700 disabled:opacity-60"
+      >
+        {busy ? "Loggar in…" : "Logga in"}
+      </button>
+    </form>
   );
 }
