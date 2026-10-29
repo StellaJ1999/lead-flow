@@ -38,27 +38,13 @@ public sealed class LeadService(ILeadRepository repository)
             .ToList();
     }
 
-    public async Task<LeadDetailsResponse?> GetByIdAsync(
-    Guid id,
-    CancellationToken cancellationToken)
+    public Task<LeadDetailsResponse?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken)
     {
-        var lead = await repository.GetByIdAsync(
+        return repository.GetDetailsByIdAsync(
             id,
             cancellationToken);
-
-        if (lead is null)
-        {
-            return null;
-        }
-
-        return new LeadDetailsResponse(
-            lead.Id,
-            lead.Name,
-            lead.Email,
-            lead.Company,
-            lead.Message,
-            lead.Status,
-            lead.CreatedAt);
     }
 
     public Task<bool> DeleteAsync(

@@ -2,6 +2,7 @@
 using LeadFlow.Domain.Entities;
 using LeadFlow.Infrastructure.Identity.Data;
 using Microsoft.EntityFrameworkCore;
+using LeadFlow.Application.DTOs.Leads;
 
 namespace LeadFlow.Infrastructure.Persistence.Repositories;
 
@@ -45,5 +46,42 @@ public sealed class LeadRepository(AppIdentityDbContext context)
             .ExecuteDeleteAsync(cancellationToken);
 
         return deletedRows > 0;
+    }
+    public async Task<LeadDetailsResponse?> GetDetailsByIdAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var lead = await context.Leads
+            .AsNoTracking()
+            .SingleOrDefaultAsync(
+                lead => lead.Id == id,
+                cancellationToken);
+
+        if (lead is null)
+            return null;
+
+        var notes = await (
+            from note in context.FollowUpNotes.AsNoTracking()
+            join author in context.Users.AsNoTracking()
+                on note.UserId equals author.Id
+            where note.LeadId == id
+            orderby note.CreatedAt descending, note.Id descending
+            select new FollowUpNoteResponse(
+                note.Id,
+                note.Text,
+                author.UserName ?? author.Email ?? author.Id,
+                note.CreatedAt)
+        ).ToListAsync(cancellationToken);
+
+        return new LeadDetailsResponse(
+            lead.Id,
+            lead.Name,
+            lead.Email,
+            lead.Company,
+            lead.Message,
+            lead.Status,
+            lead.CreatedAt,
+            lead.Outcome,
+            notes);
     }
 }

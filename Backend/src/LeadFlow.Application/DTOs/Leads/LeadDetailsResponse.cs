@@ -9,4 +9,6 @@ public sealed record LeadDetailsResponse(
     string? Company,
     string Message,
     LeadStatus Status,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    LeadOutcome? Outcome,
+    IReadOnlyList<FollowUpNoteResponse> FollowUpNotes);
