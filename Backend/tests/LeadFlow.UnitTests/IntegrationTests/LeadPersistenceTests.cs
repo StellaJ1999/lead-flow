@@ -1,4 +1,5 @@
 ﻿using LeadFlow.Application.DTOs.Leads;
+using LeadFlow.Domain.Entities;
 using LeadFlow.Domain.Enums;
 using LeadFlow.Infrastructure.Identity.Data;
 using LeadFlow.Infrastructure.Persistence.Repositories;
@@ -65,5 +66,59 @@ public class LeadPersistenceTests
         Assert.Equal(LeadStatus.New, savedLead.Status);
         Assert.Null(savedLead.Outcome);
         Assert.InRange(savedLead.CreatedAt, before, after);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_RemovesOnlySelectedLead()
+    {
+        await using var connection =
+            new SqliteConnection("Data Source=:memory:");
+
+        await connection.OpenAsync();
+
+        var options = new DbContextOptionsBuilder<AppIdentityDbContext>()
+            .UseSqlite(connection)
+            .Options;
+
+        await using var context = new AppIdentityDbContext(options);
+
+        await context.Database.EnsureCreatedAsync();
+
+        var selected = new Lead(
+            "Delete test",
+            "delete@example.com",
+            null,
+            "This lead should be deleted.");
+
+        var remaining = new Lead(
+            "Keep test",
+            "keep@example.com",
+            null,
+            "This lead should remain.");
+
+        context.Leads.AddRange(selected, remaining);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var repository = new LeadRepository(context);
+
+        var deleted = await repository.DeleteAsync(
+            selected.Id,
+            CancellationToken.None);
+
+        Assert.True(deleted);
+
+        Assert.False(await context.Leads.AnyAsync(
+            lead => lead.Id == selected.Id));
+
+        Assert.True(await context.Leads.AnyAsync(
+            lead => lead.Id == remaining.Id));
+
+        var deletedAgain = await repository.DeleteAsync(
+            selected.Id,
+            CancellationToken.None);
+
+        Assert.False(deletedAgain);
     }
 }
