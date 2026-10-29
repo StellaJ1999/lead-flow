@@ -145,7 +145,6 @@ export function SessionProvider({
 
     check();
 
-    window.addEventListener("focus", check);
     window.addEventListener("popstate", check);
     window.addEventListener("pageshow", handlePageShow);
     window.addEventListener("pagehide", hide);
@@ -153,7 +152,6 @@ export function SessionProvider({
     return () => {
       requestId.current++;
 
-      window.removeEventListener("focus", check);
       window.removeEventListener("popstate", check);
       window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("pagehide", hide);
