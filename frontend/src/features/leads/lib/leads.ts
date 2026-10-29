@@ -35,3 +35,17 @@ export function createLead(
     body: request,
   });
 }
+
+export type LeadDetailsResponse = LeadResponse & {
+  message: string;
+};
+
+export function getLeadById(
+  id: string,
+  signal?: AbortSignal,
+): Promise<LeadDetailsResponse> {
+  return api<LeadDetailsResponse>(
+    `/api/leads/${encodeURIComponent(id)}`,
+    { signal },
+  );
+}
