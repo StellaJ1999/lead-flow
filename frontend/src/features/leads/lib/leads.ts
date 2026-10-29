@@ -20,8 +20,10 @@ export type LeadResponse = {
   createdAt: string;
 };
 
-export function getLeads(): Promise<LeadResponse[]> {
-  return api<LeadResponse[]>("/api/leads");
+export function getLeads(
+  signal?: AbortSignal,
+): Promise<LeadResponse[]> {
+  return api<LeadResponse[]>("/api/leads", { signal });
 }
 
 export function createLead(
