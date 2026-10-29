@@ -17,7 +17,7 @@ export type LeadResponse = {
   name: string;
   email: string;
   company: string | null;
-  status: number;
+  status: LeadStatus;
   createdAt: string;
 };
 
