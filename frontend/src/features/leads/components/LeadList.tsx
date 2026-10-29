@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { ApiError } from "@/lib/api";
@@ -7,6 +8,10 @@ import { getAuthErrorMessage } from "@/features/auth/lib/auth";
 import { useSession } from "@/features/auth/components/SessionProvider";
 
 import { getLeads, type LeadResponse } from "../lib/leads";
+import {
+  formatLeadDate,
+  statusLabels,
+} from "../lib/lead-presentation";
 
 export function LeadList() {
   const { protectedRequest } = useSession();
@@ -15,6 +20,7 @@ export function LeadList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     let active = true;
@@ -32,7 +38,6 @@ export function LeadList() {
         }
 
         if (error instanceof ApiError && error.status === 401) {
-          // SessionProvider hanterar navigeringen till login.
           return;
         }
 
@@ -64,6 +69,11 @@ export function LeadList() {
     setAttempt(previous => previous + 1);
   }
 
+  const visibleLeads =
+    statusFilter === "all"
+      ? leads
+      : leads.filter(lead => lead.status === Number(statusFilter));
+
   return (
     <section className="space-y-5" aria-busy={loading}>
       <div className="flex flex-wrap items-center gap-4">
@@ -79,6 +89,28 @@ export function LeadList() {
         </button>
       </div>
 
+      <div className="max-w-xs">
+        <label
+          htmlFor="lead-status-filter"
+          className="block font-medium"
+        >
+          Filtrera efter status
+        </label>
+
+        <select
+          id="lead-status-filter"
+          value={statusFilter}
+          onChange={event => setStatusFilter(event.target.value)}
+          disabled={loading}
+          className="mt-1 block w-full rounded border bg-white p-3 text-gray-950 focus:outline-2 focus:outline-offset-2 focus:outline-blue-700"
+        >
+          <option value="all">Alla statusar</option>
+          <option value="0">New</option>
+          <option value="1">Contacted</option>
+          <option value="2">Closed</option>
+        </select>
+      </div>
+
       {loading ? (
         <p role="status">Hämtar leads…</p>
       ) : error ? (
@@ -86,21 +118,78 @@ export function LeadList() {
       ) : leads.length === 0 ? (
         <p>Det finns inga leads ännu.</p>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2">
-          {leads.map(lead => (
-            <li
-              key={lead.id}
-              className="min-w-0 rounded border p-4"
-            >
-              <h2 className="font-semibold">{lead.name}</h2>
-              <p className="break-all">{lead.email}</p>
+        <>
+          <p role="status">
+            Visar {visibleLeads.length} av {leads.length} leads.
+          </p>
 
-              {lead.company && (
-                <p className="mt-1 break-words">{lead.company}</p>
-              )}
-            </li>
-          ))}
-        </ul>
+          {visibleLeads.length === 0 ? (
+            <p>Det finns inga leads med vald status.</p>
+          ) : (
+            <div
+              role="region"
+              aria-label="Leadlista"
+              tabIndex={0}
+              className="overflow-x-auto rounded border focus:outline-2 focus:outline-blue-700"
+            >
+              <table className="w-full text-left">
+                <caption className="sr-only">
+                  Leads sorterade med de nyaste först.
+                  Välj ett namn för att öppna detaljer.
+                </caption>
+
+                <thead className="border-b bg-gray-100 text-gray-950">
+                  <tr>
+                    <th scope="col" className="px-4 py-3">
+                      Namn
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Företag
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Status
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Skapad
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {visibleLeads.map(lead => (
+                    <tr key={lead.id} className="border-b last:border-0">
+                      <th
+                        scope="row"
+                        className="px-4 py-3 font-medium"
+                      >
+                        <Link
+                          href={`/leads/${encodeURIComponent(lead.id)}`}
+                          className="rounded text-blue-700 underline focus:outline-2 focus:outline-offset-2 focus:outline-blue-700"
+                        >
+                          {lead.name}
+                        </Link>
+                      </th>
+
+                      <td className="px-4 py-3">
+                        {lead.company || "Ej angivet"}
+                      </td>
+
+                      <td className="px-4 py-3">
+                        {statusLabels[lead.status] ?? "Okänd status"}
+                      </td>
+
+                      <td className="whitespace-nowrap px-4 py-3">
+                        <time dateTime={lead.createdAt}>
+                          {formatLeadDate(lead.createdAt)}
+                        </time>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
