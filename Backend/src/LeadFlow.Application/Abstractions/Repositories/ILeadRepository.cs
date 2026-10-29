@@ -14,4 +14,8 @@ public interface ILeadRepository
     Task<Lead?> GetByIdAsync(
     Guid id,
     CancellationToken cancellationToken);
+
+    Task<bool> DeleteAsync(
+    Guid id,
+    CancellationToken cancellationToken);
 }

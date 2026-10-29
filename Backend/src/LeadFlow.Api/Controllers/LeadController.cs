@@ -60,4 +60,23 @@ public sealed class LeadsController(ILeadService leadService)
         return Ok(lead);
     }
 
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var deleted = await leadService.DeleteAsync(
+            id,
+            cancellationToken);
+
+        if (!deleted)
+        {
+            return NotFound(new
+            {
+                message = "Lead not found."
+            });
+        }
+
+        return NoContent();
+    }
 }

@@ -35,4 +35,15 @@ public sealed class LeadRepository(AppIdentityDbContext context)
                 lead => lead.Id == id,
                 cancellationToken);
     }
+
+    public async Task<bool> DeleteAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var deletedRows = await context.Leads
+            .Where(lead => lead.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        return deletedRows > 0;
+    }
 }

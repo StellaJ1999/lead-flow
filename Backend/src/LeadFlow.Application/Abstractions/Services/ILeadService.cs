@@ -13,4 +13,8 @@ public interface ILeadService
     Task<LeadDetailsResponse?> GetByIdAsync(
     Guid id,
     CancellationToken cancellationToken);
+
+    Task<bool> DeleteAsync(
+    Guid id,
+    CancellationToken cancellationToken);
 }

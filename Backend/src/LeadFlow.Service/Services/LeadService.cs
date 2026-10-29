@@ -60,4 +60,11 @@ public sealed class LeadService(ILeadRepository repository)
             lead.Status,
             lead.CreatedAt);
     }
+
+    public Task<bool> DeleteAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        return repository.DeleteAsync(id, cancellationToken);
+    }
 }
