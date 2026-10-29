@@ -75,20 +75,33 @@ export async function api<T = void>(
     headers.set("X-CSRF-TOKEN", await getCsrfToken());
   }
 
-  const response = await fetch(path, {
-    ...requestOptions,
-    method,
-    headers,
-    credentials: "same-origin",
-    cache: "no-store",
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(path, {
+      ...requestOptions,
+      method,
+      headers,
+      credentials: "same-origin",
+      cache: "no-store",
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
+    }
+
+    throw new ApiNetworkError();
+  }
 
   if (response.status === 204) {
     return undefined as T;
   }
 
-  const text = await response.text();
+  const text = await response.text().catch(() => {
+    throw new ApiNetworkError();
+  });
+
   let data: unknown;
 
   if (text && response.headers.get("content-type")?.includes("json")) {
