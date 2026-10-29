@@ -49,3 +49,12 @@ export function getLeadById(
     { signal },
   );
 }
+
+export function deleteLead(id: string): Promise<void> {
+  return api<void>(
+    `/api/leads/${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+    },
+  );
+}
