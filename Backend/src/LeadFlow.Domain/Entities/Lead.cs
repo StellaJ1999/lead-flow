@@ -104,5 +104,51 @@ public class Lead
 
         return note;
     }
+
+    public void ChangeStatus(
+    LeadStatus status,
+    LeadOutcome? outcome)
+    {
+        // Kontrollera hela begäran innan något ändras.
+        if (!Enum.IsDefined(status))
+            throw new ArgumentException("Invalid lead status.");
+
+        if (status == LeadStatus.Closed)
+        {
+            if (outcome is null || !Enum.IsDefined(outcome.Value))
+            {
+                throw new ArgumentException(
+                    "Closing a lead requires Customer or Not interested.");
+            }
+        }
+        else if (outcome is not null)
+        {
+            throw new ArgumentException(
+                "An open lead cannot have a closing outcome.");
+        }
+
+        // Samma värden kan skickas igen utan att ge fel.
+        if (status == Status && outcome == Outcome)
+            return;
+
+        switch (status)
+        {
+            case LeadStatus.Contacted when Status == LeadStatus.New:
+                MarkAsContacted();
+                break;
+
+            case LeadStatus.Contacted when Status == LeadStatus.Closed:
+                Reopen();
+                break;
+
+            case LeadStatus.Closed when Status != LeadStatus.Closed:
+                Close(outcome!.Value);
+                break;
+
+            default:
+                throw new InvalidOperationException(
+                    "This status change is not allowed.");
+        }
+    }
 }
 
