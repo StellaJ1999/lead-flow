@@ -84,4 +84,19 @@ public sealed class LeadRepository(AppIdentityDbContext context)
             lead.Outcome,
             notes);
     }
+    public Task<Lead?> GetForUpdateAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        return context.Leads
+            .SingleOrDefaultAsync(
+                lead => lead.Id == id,
+                cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(
+        CancellationToken cancellationToken)
+    {
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

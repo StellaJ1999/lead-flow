@@ -17,4 +17,9 @@ public interface ILeadService
     Task<bool> DeleteAsync(
     Guid id,
     CancellationToken cancellationToken);
+
+    Task<LeadStatusResponse?> ChangeStatusAsync(
+    Guid id,
+    ChangeLeadStatusRequest request,
+    CancellationToken cancellationToken);
 }

@@ -53,4 +53,32 @@ public sealed class LeadService(ILeadRepository repository)
     {
         return repository.DeleteAsync(id, cancellationToken);
     }
+
+    public async Task<LeadStatusResponse?> ChangeStatusAsync(
+    Guid id,
+    ChangeLeadStatusRequest request,
+    CancellationToken cancellationToken)
+    {
+        if (request.Status is null)
+            throw new ArgumentException("Status is required.");
+
+        var lead = await repository.GetForUpdateAsync(
+            id,
+            cancellationToken);
+
+        if (lead is null)
+            return null;
+
+        lead.ChangeStatus(
+            request.Status.Value,
+            request.Outcome);
+
+        // Körs bara när domänreglerna accepterat ändringen.
+        await repository.SaveChangesAsync(cancellationToken);
+
+        return new LeadStatusResponse(
+            lead.Id,
+            lead.Status,
+            lead.Outcome);
+    }
 }

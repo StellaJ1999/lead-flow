@@ -23,4 +23,11 @@ public interface ILeadRepository
     Task<LeadDetailsResponse?> GetDetailsByIdAsync(
     Guid id,
     CancellationToken cancellationToken);
+
+    Task<Lead?> GetForUpdateAsync(
+    Guid id,
+    CancellationToken cancellationToken);
+
+    Task SaveChangesAsync(
+        CancellationToken cancellationToken);
 }

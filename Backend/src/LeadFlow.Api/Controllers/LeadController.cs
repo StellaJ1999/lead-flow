@@ -79,4 +79,45 @@ public sealed class LeadsController(ILeadService leadService)
 
         return NoContent();
     }
+
+    [HttpPatch("{id:guid}/status")]
+    public async Task<IActionResult> ChangeStatus(
+    Guid id,
+    [FromBody] ChangeLeadStatusRequest request,
+    CancellationToken cancellationToken)
+    {
+        LeadStatusResponse? result;
+
+        try
+        {
+            result = await leadService.ChangeStatusAsync(
+                id,
+                request,
+                cancellationToken);
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new
+            {
+                message = exception.Message
+            });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new
+            {
+                message = exception.Message
+            });
+        }
+
+        if (result is null)
+        {
+            return NotFound(new
+            {
+                message = "Lead not found."
+            });
+        }
+
+        return Ok(result);
+    }
 }
