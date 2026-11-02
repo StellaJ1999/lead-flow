@@ -2,6 +2,7 @@
 
 import { DeleteLeadButton } from "./DeleteLeadButton";
 import { FollowUpNotes } from "./FollowUpNotes";
+import { LeadStatusForm } from "./LeadStatusForm";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -139,6 +140,22 @@ export function LeadDetails() {
               </dd>
             </div>
           </dl>
+          
+            <LeadStatusForm
+                key={lead.id}
+                lead={lead}
+                onSaved={result => {
+                    setLead(current =>
+                    current && current.id === result.id
+                        ? {
+                            ...current,
+                            status: result.status,
+                            outcome: result.outcome,
+                        }
+                        : current,
+                    );
+                }}
+            />
 
           <div>
             <h2 className="text-xl font-semibold">Meddelande</h2>
@@ -147,6 +164,7 @@ export function LeadDetails() {
               {lead.message}
             </p>
           </div>
+
           <FollowUpNotes notes={lead.followUpNotes} />
           <DeleteLeadButton
                 leadId={lead.id}

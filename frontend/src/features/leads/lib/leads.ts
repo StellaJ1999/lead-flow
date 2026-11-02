@@ -69,3 +69,27 @@ export function deleteLead(id: string): Promise<void> {
     },
   );
 }
+
+export type ChangeLeadStatusRequest = {
+  status: LeadStatus;
+  outcome: LeadOutcome | null;
+};
+
+export type LeadStatusResponse = {
+  id: string;
+  status: LeadStatus;
+  outcome: LeadOutcome | null;
+};
+
+export function changeLeadStatus(
+  id: string,
+  request: ChangeLeadStatusRequest,
+): Promise<LeadStatusResponse> {
+  return api<LeadStatusResponse>(
+    `/api/leads/${encodeURIComponent(id)}/status`,
+    {
+      method: "PATCH",
+      body: request,
+    },
+  );
+}
