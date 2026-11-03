@@ -144,7 +144,7 @@ export function LeadDetails() {
           </dl>
 
             <LeadStatusForm
-                key={lead.id}
+                key={`status-${lead.id}`}
                 lead={lead}
                 onSaved={result => {
                     setLead(current =>
@@ -168,7 +168,7 @@ export function LeadDetails() {
           </div>
                 
           <AddFollowUpNoteForm 
-            key={lead.id}
+            key={`follow-up-${lead.id}`}
             leadId={lead.id}
             onSaved={async () => {
                 const updated = await protectedRequest(() =>
