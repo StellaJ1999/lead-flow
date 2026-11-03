@@ -1,8 +1,13 @@
+import { HomeAuthLink } from "@/features/auth/components/HomeAuthLink";
 import { InterestForm } from "@/features/leads/components/InterestForm";
 
 export default function HomePage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-16">
+      <div className="mb-6 flex justify-end">
+        <HomeAuthLink />
+      </div>
+
       <h1 className="text-3xl font-semibold">
         Intresseanmälan
       </h1>
