@@ -3,8 +3,8 @@ namespace LeadFlow.Domain.Entities;
 
 public class FollowUpNote
 {
-    public Guid Id { get; set; }
-    public Guid LeadId { get; set; }
+    public Guid Id { get; private set; }
+    public Guid LeadId { get; private set; }
     public string UserId { get; private set; }
     public string Text { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
@@ -16,6 +16,13 @@ public class FollowUpNote
 
         if (string.IsNullOrWhiteSpace(text))
             throw new ArgumentException("Note text is required.", nameof(text));
+
+        if (text.Length > 4000)
+        {
+            throw new ArgumentException(
+                "Note must not exceed 4000 characters.",
+                nameof(text));
+        }
 
         if (string.IsNullOrWhiteSpace(userId))
             throw new ArgumentException("Author ID is required.", nameof(userId));
