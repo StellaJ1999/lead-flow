@@ -30,4 +30,10 @@ public interface ILeadRepository
 
     Task SaveChangesAsync(
         CancellationToken cancellationToken);
+
+    Task<string?> GetAuthorDisplayNameAsync(
+    string authorId,
+    CancellationToken cancellationToken);
+
+    void AddFollowUpNote(FollowUpNote note);
 }

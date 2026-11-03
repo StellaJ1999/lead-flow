@@ -22,4 +22,10 @@ public interface ILeadService
     Guid id,
     ChangeLeadStatusRequest request,
     CancellationToken cancellationToken);
+
+    Task<FollowUpNoteResponse?> AddFollowUpNoteAsync(
+    Guid leadId,
+    CreateFollowUpNoteRequest request,
+    string authorId,
+    CancellationToken cancellationToken);
 }

@@ -99,4 +99,20 @@ public sealed class LeadRepository(AppIdentityDbContext context)
     {
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public Task<string?> GetAuthorDisplayNameAsync(
+    string authorId,
+    CancellationToken cancellationToken)
+    {
+        return context.Users
+            .AsNoTracking()
+            .Where(user => user.Id == authorId)
+            .Select(user => user.UserName ?? user.Email ?? user.Id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public void AddFollowUpNote(FollowUpNote note)
+    {
+        context.FollowUpNotes.Add(note);
+    }
 }

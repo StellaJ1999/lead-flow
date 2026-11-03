@@ -81,4 +81,42 @@ public sealed class LeadService(ILeadRepository repository)
             lead.Status,
             lead.Outcome);
     }
+
+    public async Task<FollowUpNoteResponse?> AddFollowUpNoteAsync(
+    Guid leadId,
+    CreateFollowUpNoteRequest request,
+    string authorId,
+    CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(authorId))
+            throw new UnauthorizedAccessException();
+
+        var lead = await repository.GetForUpdateAsync(
+            leadId,
+            cancellationToken);
+
+        if (lead is null)
+            return null;
+
+        var author = await repository.GetAuthorDisplayNameAsync(
+            authorId,
+            cancellationToken);
+
+        if (author is null)
+            throw new UnauthorizedAccessException();
+
+        var note = lead.AddFollowUpNote(
+            request.Text,
+            authorId);
+
+        repository.AddFollowUpNote(note);
+
+        await repository.SaveChangesAsync(cancellationToken);
+
+        return new FollowUpNoteResponse(
+            note.Id,
+            note.Text,
+            author,
+            note.CreatedAt);
+    }
 }

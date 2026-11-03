@@ -2,6 +2,7 @@
 using LeadFlow.Application.DTOs.Leads;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LeadFlow.Api.Controllers;
 
@@ -119,5 +120,54 @@ public sealed class LeadsController(ILeadService leadService)
         }
 
         return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/notes")]
+    public async Task<IActionResult> AddFollowUpNote(
+    Guid id,
+    [FromBody] CreateFollowUpNoteRequest request,
+    CancellationToken cancellationToken)
+    {
+        var authorId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(authorId))
+            return Unauthorized();
+
+        FollowUpNoteResponse? note;
+
+        try
+        {
+            note = await leadService.AddFollowUpNoteAsync(
+                id,
+                request,
+                authorId,
+                cancellationToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized();
+        }
+        catch (ArgumentException)
+        {
+            // Reservskydd om domänvalideringen avvisar texten.
+            ModelState.AddModelError(
+                nameof(CreateFollowUpNoteRequest.Text),
+                "Note text is required and must not exceed 4000 characters.");
+
+            return ValidationProblem(ModelState);
+        }
+
+        if (note is null)
+        {
+            return NotFound(new
+            {
+                message = "Lead not found."
+            });
+        }
+
+        return StatusCode(
+            StatusCodes.Status201Created,
+            note);
     }
 }
