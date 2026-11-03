@@ -1,82 +1,83 @@
-## Lokal backendintegration
+## Kör projektet lokalt
 
-Frontend använder en Next.js-rewrite för att vidarebefordra
-`/api/...` till .NET-backend.
+### Förutsättningar
 
-### Adresser
+- .NET 10 SDK
+- Node.js och npm
+- SQL Server Express LocalDB med instansen `MSSQLLocalDB`
 
-- Frontend: https://localhost:3000
-- Backend: https://localhost:4443
-- API-adresser i browserkod: /api/...
+### 1. Konfigurera backend och databasen
 
-### Frontendkonfiguration
+Öppna PowerShell i repots rot och kör:
 
-Kopiera `.env.example` till `.env.local`.
+```powershell
+cd Backend
+dotnet tool restore
 
-BACKEND_URL används av Next-servern och ska inte ha
-NEXT_PUBLIC_-prefix.
+dotnet user-secrets set "ConnectionStrings:SqlServer" "Server=(localdb)\MSSQLLocalDB;Database=LeadFlow;Trusted_Connection=True;TrustServerCertificate=True" --project src/LeadFlow.Api
+dotnet user-secrets set "Seed:StaffEmail" "demo@example.com" --project src/LeadFlow.Api
+dotnet user-secrets set "Seed:StaffPassword" "<välj ett eget demolösenord>" --project src/LeadFlow.Api
+```
 
-Databasanslutning och demonstrationskontots uppgifter
-konfigureras endast i backendens User Secrets:
+Byt ut lösenordsplatshållaren mot ett eget lösenord för det lokala demokontot. Uppgifterna sparas lokalt i .NET User Secrets.
 
-- ConnectionStrings:SqlServer
-- Seed:StaffEmail
-- Seed:StaffPassword
+Tillämpa den befintliga migrationen för att skapa eller uppdatera databasen:
 
-### Certifikat
+```powershell
+dotnet ef database update --project src/LeadFlow.Infrastructure --startup-project src/LeadFlow.Api
+```
 
-Lita på och exportera .NET:s utvecklingscertifikat:
+### 2. Förbered HTTPS och starta backend
+
+Kör följande i samma terminal:
 
 ```powershell
 dotnet dev-certs https --trust
+dotnet dev-certs https --export-path "$env:TEMP\leadflow-backend.crt" --format PEM
 
-dotnet dev-certs https `
-  --export-path "$env:TEMP\leadflow-backend.crt" `
-  --format PEM
-```
-
-Ange följande i frontendterminalen innan Next startas:
-
-```powershell
-$env:NODE_EXTRA_CA_CERTS = "$env:TEMP\leadflow-backend.crt"
-```
-
-Inställningen behöver sättas igen i en ny terminalsession.
-Exportera certifikatet igen om utvecklingscertifikatet byts ut.
-
-### Databas
-
-Från Backend, efter att User Secrets har konfigurerats:
-
-```powershell
-dotnet ef database update `
-  --project src/LeadFlow.Infrastructure `
-  --startup-project src/LeadFlow.Api
-```
-
-Kommandot kräver att dotnet-ef finns installerat.
-
-### Starta backend — terminal 1
-
-Från Backend:
-
-```powershell
 dotnet run --project src/LeadFlow.Api --launch-profile "https development"
 ```
 
-### Starta frontend — terminal 2
+Backend körs på `https://localhost:4443`. Låt terminalen vara öppen.
 
-Från frontend:
+### 3. Starta frontend
+
+Öppna en ny PowerShell-terminal i repots rot:
 
 ```powershell
+cd frontend
+Copy-Item .env.example .env.local
 npm ci
+```
 
+Kontrollera att `.env.local` innehåller följande:
+
+```dotenv
+BACKEND_URL=https://localhost:4443
+```
+
+Starta frontend:
+
+```powershell
 $env:NODE_EXTRA_CA_CERTS = "$env:TEMP\leadflow-backend.crt"
-
 npm run dev -- --experimental-https --port 3000
 ```
 
-Next kan behöva godkännande för att installera sin lokala
-certifikatutfärdare första gången HTTPS används.
+Sätt `NODE_EXTRA_CA_CERTS` igen varje gång du startar frontend från en ny terminal.
 
-Öppna https://localhost:3000/auth/login.
+### 4. Prova kärnflödet
+
+1. Öppna [det publika formuläret](https://localhost:3000) och skicka in en intresseanmälan med fiktiva uppgifter.
+2. Öppna [inloggningssidan](https://localhost:3000/auth/login) och logga in med demokontot.
+3. Leta upp anmälan i leadlistan. Prova filtret **New** och öppna leadet.
+4. Ändra status till **Contacted**, lägg till en uppföljningsanteckning och avsluta sedan leadet med ett utfall.
+
+### Kör automatiserade tester
+
+Kör från mappen `Backend`:
+
+```powershell
+dotnet test LeadFlow.slnx
+```
+
+De automatiserade lagringstesterna använder SQLite i minnet och kan köras utan den lokala SQL Server-databasen.
