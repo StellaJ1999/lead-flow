@@ -93,3 +93,20 @@ export function changeLeadStatus(
     },
   );
 }
+
+export type CreateFollowUpNoteRequest = {
+  text: string;
+};
+
+export function createFollowUpNote(
+  leadId: string,
+  request: CreateFollowUpNoteRequest,
+): Promise<FollowUpNoteResponse> {
+  return api<FollowUpNoteResponse>(
+    `/api/leads/${encodeURIComponent(leadId)}/notes`,
+    {
+      method: "POST",
+      body: request,
+    },
+  );
+}

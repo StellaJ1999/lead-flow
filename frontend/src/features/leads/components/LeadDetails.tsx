@@ -3,6 +3,7 @@
 import { DeleteLeadButton } from "./DeleteLeadButton";
 import { FollowUpNotes } from "./FollowUpNotes";
 import { LeadStatusForm } from "./LeadStatusForm";
+import { AddFollowUpNoteForm } from "./AddFollowUpNoteForm";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -140,7 +141,7 @@ export function LeadDetails() {
               </dd>
             </div>
           </dl>
-          
+
             <LeadStatusForm
                 key={lead.id}
                 lead={lead}
@@ -164,7 +165,21 @@ export function LeadDetails() {
               {lead.message}
             </p>
           </div>
+                
+          <AddFollowUpNoteForm 
+            key={lead.id}
+            leadId={lead.id}
+            onSaved={async () => {
+                const updated = await protectedRequest(() =>
+                getLeadById(lead.id),
+                );
 
+                setLead(current =>
+                current?.id === updated.id ? updated : current,
+                );
+            }}
+          />
+          
           <FollowUpNotes notes={lead.followUpNotes} />
           <DeleteLeadButton
                 leadId={lead.id}
