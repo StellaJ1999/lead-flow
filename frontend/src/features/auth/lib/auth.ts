@@ -1,3 +1,5 @@
+import type { CurrentUser } from "../types/auth";
+
 import {
   api,
   ApiError,
@@ -5,11 +7,6 @@ import {
   clearCsrfToken,
   refreshCsrfToken,
 } from "@/lib/api";
-
-export type CurrentUser = {
-  id: string;
-  email: string;
-};
 
 export class InvalidCredentialsError extends Error {
   constructor() {

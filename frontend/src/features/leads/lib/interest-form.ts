@@ -1,13 +1,4 @@
-export type FormValues = {
-  name: string;
-  email: string;
-  company: string;
-  message: string;
-};
-
-export type FieldName = keyof FormValues;
-
-export type FieldErrors = Partial<Record<FieldName, string>>;
+import type { FormValues, FieldName, FieldErrors } from "../types/interest-form";
 
 export const initialValues: FormValues = {
   name: "",

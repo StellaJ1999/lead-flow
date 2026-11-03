@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import type { LayoutChildrenProps } from "@/app/types/layout-props";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Från intresseanmälan till uppföljt lead.",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: LayoutChildrenProps) {
   return (
     <html lang="sv">
       <body>{children}</body>

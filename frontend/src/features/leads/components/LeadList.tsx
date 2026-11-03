@@ -7,7 +7,8 @@ import { ApiError } from "@/lib/api";
 import { getAuthErrorMessage } from "@/features/auth/lib/auth";
 import { useSession } from "@/features/auth/components/SessionProvider";
 
-import { getLeads, type LeadResponse } from "../lib/leads";
+import { getLeads } from "../lib/leads";
+import type { LeadResponse } from "../types/leads";
 import {
   formatLeadDate,
   statusLabels,

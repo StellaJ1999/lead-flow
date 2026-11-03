@@ -1,5 +1,6 @@
 "use client";
 
+import type { AddFollowUpNoteFormProps } from "../types/AddFollowUpNoteForm";
 import { useRef, useState, type FormEvent } from "react";
 
 import { ApiError } from "@/lib/api";
@@ -7,15 +8,10 @@ import { useSession } from "@/features/auth/components/SessionProvider";
 
 import { createFollowUpNote } from "../lib/leads";
 
-type Props = {
-  leadId: string;
-  onSaved: () => Promise<void>;
-};
-
 export function AddFollowUpNoteForm({
   leadId,
   onSaved,
-}: Props) {
+}: AddFollowUpNoteFormProps) {
   const { protectedRequest } = useSession();
 
   const submitting = useRef(false);

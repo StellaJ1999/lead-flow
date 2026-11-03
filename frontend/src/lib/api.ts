@@ -1,12 +1,4 @@
-type ApiOptions = Omit<RequestInit, "body" | "credentials"> & {
-  body?: unknown;
-};
-
-type ApiProblem = {
-  message?: string;
-  title?: string;
-  errors?: Record<string, string[]>;
-};
+import type { ApiOptions, ApiProblem, CsrfTokenResponse } from "./types/api";
 
 export class ApiError extends Error {
   constructor(
@@ -35,7 +27,7 @@ export function clearCsrfToken(): void {
 export async function refreshCsrfToken(): Promise<string> {
   clearCsrfToken();
 
-  const result = await api<{ token: string }>("/api/auth/csrf");
+  const result = await api<CsrfTokenResponse>("/api/auth/csrf");
 
   if (!result.token) {
     throw new Error("Servern returnerade ingen CSRF-token.");

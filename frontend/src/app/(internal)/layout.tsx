@@ -1,13 +1,11 @@
-import type { ReactNode } from "react";
+import type { LayoutChildrenProps } from "@/app/types/layout-props";
 
 import { InternalNavigation } from "@/features/auth/components/InternalNavigation";
 import { SessionProvider } from "@/features/auth/components/SessionProvider";
 
 export default function InternalLayout({
   children,
-}: {
-  children: ReactNode;
-}) {
+}: LayoutChildrenProps) {
   return (
     <SessionProvider>
       <InternalNavigation />

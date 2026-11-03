@@ -1,4 +1,4 @@
-export type LeadStatus = 0 | 1 | 2;
+import type { LeadStatus } from "../types/lead-presentation";
 
 export const statusLabels: Record<LeadStatus, string> = {
   0: "New",

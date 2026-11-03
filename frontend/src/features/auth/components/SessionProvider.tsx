@@ -1,5 +1,7 @@
 "use client";
 
+import type { SessionState, SessionContextValue, SessionProviderProps } from "../types/session";
+
 import {
   createContext,
   useCallback,
@@ -7,7 +9,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -17,25 +18,7 @@ import { ApiError, clearCsrfToken } from "@/lib/api";
 import {
   getAuthErrorMessage,
   getCurrentUser,
-  type CurrentUser,
 } from "../lib/auth";
-
-type SessionState =
-  | { status: "checking" | "redirecting" }
-  | { status: "error"; message: string }
-  | {
-      status: "authenticated";
-      user: CurrentUser;
-      path: string;
-    };
-
-type SessionContextValue = {
-  user: CurrentUser;
-  endSession: () => void;
-  protectedRequest: <T>(
-    operation: () => Promise<T>,
-  ) => Promise<T>;
-};
 
 const SessionContext = createContext<SessionContextValue | null>(null);
 
@@ -51,9 +34,7 @@ export function useSession(): SessionContextValue {
 
 export function SessionProvider({
   children,
-}: {
-  children: ReactNode;
-}) {
+}: SessionProviderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const requestId = useRef(0);

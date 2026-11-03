@@ -1,5 +1,7 @@
 "use client";
 
+import type { LeadRouteParams } from "../types/leads";
+
 import { DeleteLeadButton } from "./DeleteLeadButton";
 import { FollowUpNotes } from "./FollowUpNotes";
 import { LeadStatusForm } from "./LeadStatusForm";
@@ -13,10 +15,8 @@ import { ApiError } from "@/lib/api";
 import { getAuthErrorMessage } from "@/features/auth/lib/auth";
 import { useSession } from "@/features/auth/components/SessionProvider";
 
-import {
-  getLeadById,
-  type LeadDetailsResponse,
-} from "../lib/leads";
+import { getLeadById } from "../lib/leads";
+import type { LeadDetailsResponse } from "../types/leads";
 
 import {
   formatLeadDate,
@@ -24,7 +24,7 @@ import {
 } from "../lib/lead-presentation";
 
 export function LeadDetails() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<LeadRouteParams>();
   const { protectedRequest } = useSession();
 
   const [lead, setLead] = useState<LeadDetailsResponse | null>(null);

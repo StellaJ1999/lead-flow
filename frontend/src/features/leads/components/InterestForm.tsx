@@ -1,5 +1,13 @@
 "use client";
 
+import type {
+  FieldErrors,
+  FieldName,
+  FormValues,
+  FormStatus,
+  InterestFormField,
+} from "../types/interest-form";
+
 import {
   useEffect,
   useId,
@@ -17,19 +25,9 @@ import {
   limits,
   mapBackendErrors,
   validateInterestForm,
-  type FieldErrors,
-  type FieldName,
-  type FormValues,
 } from "../lib/interest-form";
 
-type FormStatus = "idle" | "pending" | "success" | "error";
-
-const fields: {
-  name: FieldName;
-  label: string;
-  type: "text" | "email" | "textarea";
-  autoComplete?: string;
-}[] = [
+const fields: InterestFormField[] = [
   {
     name: "name",
     label: "Namn",

@@ -1,25 +1,17 @@
 "use client";
 
+import type { LeadStatusFormProps } from "../types/LeadStatusForm";
 import { useState, type FormEvent } from "react";
 
 import { ApiError } from "@/lib/api";
 import { useSession } from "@/features/auth/components/SessionProvider";
 
-import {
-  changeLeadStatus,
-  type LeadDetailsResponse,
-  type LeadOutcome,
-  type LeadStatusResponse,
-} from "../lib/leads";
+import { changeLeadStatus } from "../lib/leads";
+import type { LeadOutcome } from "../types/leads";
 
-import type { LeadStatus } from "../lib/lead-presentation";
+import type { LeadStatus } from "../types/lead-presentation";
 
-type Props = {
-  lead: LeadDetailsResponse;
-  onSaved: (result: LeadStatusResponse) => void;
-};
-
-export function LeadStatusForm({ lead, onSaved }: Props) {
+export function LeadStatusForm({ lead, onSaved }: LeadStatusFormProps) {
   const { protectedRequest } = useSession();
 
   const [status, setStatus] = useState<LeadStatus>(lead.status);

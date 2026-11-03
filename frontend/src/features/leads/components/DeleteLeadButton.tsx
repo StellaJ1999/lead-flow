@@ -1,5 +1,6 @@
 "use client";
 
+import type { DeleteLeadButtonProps } from "../types/DeleteLeadButton";
 import { useRef, useState } from "react";
 
 import { ApiError } from "@/lib/api";
@@ -7,11 +8,6 @@ import { getAuthErrorMessage } from "@/features/auth/lib/auth";
 import { useSession } from "@/features/auth/components/SessionProvider";
 
 import { deleteLead } from "../lib/leads";
-
-type DeleteLeadButtonProps = {
-  leadId: string;
-  leadName: string;
-};
 
 export function DeleteLeadButton({
   leadId,

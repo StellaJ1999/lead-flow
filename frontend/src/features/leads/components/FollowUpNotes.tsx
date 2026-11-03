@@ -1,11 +1,7 @@
-import type { FollowUpNoteResponse } from "../lib/leads";
+import type { FollowUpNotesProps } from "../types/FollowUpNotes";
 import { formatLeadDate } from "../lib/lead-presentation";
 
-type Props = {
-  notes: FollowUpNoteResponse[];
-};
-
-export function FollowUpNotes({ notes }: Props) {
+export function FollowUpNotes({ notes }: FollowUpNotesProps) {
   return (
     <section aria-labelledby="follow-up-notes-heading">
       <h2
