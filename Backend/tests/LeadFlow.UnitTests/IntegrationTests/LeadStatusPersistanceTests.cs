@@ -11,6 +11,7 @@ namespace LeadFlow.UnitTests.IntegrationTests;
 
 public class LeadStatusPersistenceTests
 {
+    // Kontrollerar att databasen bara sparar tillåtna statusändringar.
     [Theory]
     // initial status, requested status, outcome, accepted
     [InlineData(0, 1, null, true)]

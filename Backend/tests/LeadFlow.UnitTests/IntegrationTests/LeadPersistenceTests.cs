@@ -11,6 +11,7 @@ namespace LeadFlow.UnitTests.IntegrationTests;
 
 public class LeadPersistenceTests
 {
+    // Kontrollerar att ett skapat lead kan läsas från en ny databaskontext.
     [Theory]
     [InlineData(null)]
     [InlineData("Example AB")]
@@ -68,6 +69,7 @@ public class LeadPersistenceTests
         Assert.InRange(savedLead.CreatedAt, before, after);
     }
 
+    // Kontrollerar att bara det valda leadet tas bort.
     [Fact]
     public async Task DeleteAsync_RemovesOnlySelectedLead()
     {

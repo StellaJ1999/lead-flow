@@ -26,12 +26,14 @@ public class CreateLeadRequestTests
         return results;
     }
 
+    // Kontrollerar att en giltig förfrågan utan företag godkänns.
     [Fact]
     public void ValidInput_WithoutCompany_PassesValidation()
     {
         Assert.Empty(Validate(ValidRequest()));
     }
 
+    // Kontrollerar att värden precis på maxlängden godkänns.
     [Fact]
     public void InputAtMaximumLengths_PassesValidation()
     {
@@ -141,6 +143,7 @@ public class CreateLeadRequestTests
         };
     }
 
+    // Kontrollerar att ogiltiga värden ger valideringsfel på rätt fält.
     [Theory]
     [MemberData(nameof(InvalidRequests))]
     public void InvalidInput_ProducesErrorForExpectedProperty(

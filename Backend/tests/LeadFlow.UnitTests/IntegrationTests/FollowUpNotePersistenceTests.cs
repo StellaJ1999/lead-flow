@@ -11,6 +11,7 @@ namespace LeadFlow.UnitTests.IntegrationTests;
 
 public class FollowUpNotePersistenceTests
 {
+    // Kontrollerar att bara giltiga uppföljningsanteckningar sparas i databasen.
     [Theory]
     [InlineData("valid")]
     [InlineData("boundary")]

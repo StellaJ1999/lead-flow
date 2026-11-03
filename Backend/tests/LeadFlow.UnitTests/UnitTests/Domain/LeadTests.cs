@@ -9,6 +9,7 @@ public class LeadTests
     private static Lead CreateLead() =>
         new("Anna Andersson", "anna@example.com", null, "Would like more information.");
 
+    // Kontrollerar att ett nytt lead får status New och saknar utfall.
     [Fact]
     public void Constructor_StartsWithNewStatusAndNoOutcome()
     {
@@ -18,6 +19,7 @@ public class LeadTests
         Assert.Null(lead.Outcome);
     }
 
+    // Kontrollerar att ett nytt lead kan markeras som kontaktat utan att få ett utfall.
     [Fact]
     public void MarkAsContacted_FromNew_ChangesStatusWithoutOutcome()
     {
@@ -29,6 +31,7 @@ public class LeadTests
         Assert.Null(lead.Outcome);
     }
 
+    // Kontrollerar att ett öppet lead stängs med det valda utfallet.
     [Theory]
     [InlineData(LeadOutcome.Customer, false)]
     [InlineData(LeadOutcome.NotInterested, false)]
@@ -49,6 +52,7 @@ public class LeadTests
         Assert.Equal<LeadOutcome?>(outcome, lead.Outcome);
     }
 
+    // Kontrollerar att ett ogiltigt utfall avvisas och att leadet förblir öppet.
     [Fact]
     public void Close_WithInvalidOutcome_ThrowsAndKeepsLeadOpen()
     {
@@ -61,6 +65,7 @@ public class LeadTests
         Assert.Null(lead.Outcome);
     }
 
+    // Kontrollerar att ett stängt lead inte kan stängas igen och behåller sitt utfall.
     [Fact]
     public void Close_WhenAlreadyClosed_ThrowsAndPreservesOutcome()
     {
@@ -74,6 +79,7 @@ public class LeadTests
         Assert.Equal<LeadOutcome?>(LeadOutcome.Customer, lead.Outcome);
     }
 
+    // Kontrollerar att återöppning av ett stängt lead rensar utfallet.
     [Theory]
     [InlineData(LeadOutcome.Customer)]
     [InlineData(LeadOutcome.NotInterested)]
@@ -88,6 +94,7 @@ public class LeadTests
         Assert.Null(lead.Outcome);
     }
 
+    // Kontrollerar att ett öppet lead inte kan återöppnas.
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -106,6 +113,7 @@ public class LeadTests
         Assert.Null(lead.Outcome);
     }
 
+    // Kontrollerar att ett kontaktat eller stängt lead inte kan markeras som kontaktat.
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -127,6 +135,7 @@ public class LeadTests
         Assert.Equal(originalOutcome, lead.Outcome);
     }
 
+    // Kontrollerar att ett återöppnat lead kan stängas med ett nytt utfall.
     [Fact]
     public void ReopenedLead_CanBeClosedWithAnotherOutcome()
     {
@@ -140,6 +149,7 @@ public class LeadTests
         Assert.Equal<LeadOutcome?>(LeadOutcome.Customer, lead.Outcome);
     }
 
+    // Kontrollerar att flera anteckningar kan läggas till med författare och tidsstämpel.
     [Fact]
     public void AddFollowUpNote_AllowsMultipleNotesWithAuthorAndTimestamp()
     {
@@ -164,6 +174,7 @@ public class LeadTests
         Assert.InRange(second.CreatedAt, before, after);
     }
 
+    // Kontrollerar att anteckningar utan giltig text eller författare avvisas.
     [Theory]
     [InlineData("", "user-1")]
     [InlineData("   ", "user-1")]
