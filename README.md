@@ -149,9 +149,7 @@ Testerna omfattar bland annat:
 - Hantering av saknat lead och saknad författare.
 - Att anteckningar sparas med rätt text, leadkoppling, författar-ID och skapandetid.
 
-  ### Manuell testning
-
-API-endpoints har testats manuellt i Postman. Testningen omfattade inloggning, utloggning, hämtning av aktuell användare och CSRF-token samt hantering av leads och uppföljningsanteckningar.
+### Manuell testning
 
 Kommunikationen mellan frontend och backend har kontrollerats i webbläsarens DevTools, bland annat för att verifiera att autentiseringscookien sätts vid inloggning och att skyddade anrop nekas efter utloggning.
 
