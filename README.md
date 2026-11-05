@@ -51,7 +51,7 @@ Frontend kommunicerar med backend via en proxy. Backend använder controllers, s
 - **Repositories** använder Entity Framework Core för att läsa och spara data.
 - **Domänmodeller** innehåller regler för leads, statusändringar och uppföljningsanteckningar.
 
-  ## Projektdagbok
+## Projektdagbok
 
 ### 17/10
 
