@@ -125,13 +125,44 @@ Testningen har begränsningar. De automatiserade databastesterna använder SQLit
 
 Vid körning passerar 45 av 45 tester.
 
-### Fördelning av xUnitTester:
+### Automatiserade tester
 
-1. 19 testar affärsregler för leads och uppföljningsanteckningar.
-2. 3 testar validering av intresseanmälningar.
-3. 3 testar att leads kan sparas, läsas tillbaka och raderas.
-4. 13 testar vilka statusändringar som sparas eller avvisas.
-5. 7 testar vilka uppföljningsanteckningar som sparas eller avvisas.
+Vid den dokumenterade testkörningen passerade **45 av 45 tester**.
+
+| Testområde | Antal |
+| --- | ---: |
+| Affärsregler för leads och uppföljningsanteckningar | 19 |
+| Validering av intresseanmälningar | 3 |
+| Lagring, läsning och radering av leads | 3 |
+| Statusändringar som sparas eller avvisas | 13 |
+| Uppföljningsanteckningar som sparas eller avvisas | 7 |
+| **Totalt** | **45** |
+
+Testerna omfattar bland annat:
+
+- Obligatoriska fält, e-postformat och maximala fältlängder.
+- Tillåtna och otillåtna kombinationer av status och avslutsutfall.
+- Att återöppnade leads får status `Contacted` och att avslutsutfallet rensas.
+- Att avvisade statusändringar inte påverkar lagrade uppgifter, även vid en senare sparning.
+- Att leads sparas och kan läsas tillbaka med en ny databaskontext.
+- Validering av uppföljningsanteckningar.
+- Hantering av saknat lead och saknad författare.
+- Att anteckningar sparas med rätt text, leadkoppling, författar-ID och skapandetid.
+
+  ### Manuell testning
+
+API-endpoints har testats manuellt i Postman. Testningen omfattade inloggning, utloggning, hämtning av aktuell användare och CSRF-token samt hantering av leads och uppföljningsanteckningar.
+
+Kommunikationen mellan frontend och backend har kontrollerats i webbläsarens DevTools, bland annat för att verifiera att autentiseringscookien sätts vid inloggning och att skyddade anrop nekas efter utloggning.
+
+| Testfall | Resultat |
+| --- | --- |
+| Inloggning med giltiga uppgifter | `204 No Content` |
+| Fel lösenord eller okänd e-postadress | `401 Unauthorized` |
+| Skyddat anrop utan inloggning | Åtkomst nekas |
+| Skapa lead utan CSRF-token | `400 Bad Request`, inget lead skapas |
+| Skapa lead med felaktig CSRF-token | `400 Bad Request`, inget lead skapas |
+| Skapa lead med giltiga uppgifter och korrekt CSRF-token | `201 Created`, leadet sparas |
 
 ## Användning av AI
 Då temat för denna kurs har varit AI har jag använt mig av det i större omfattning än jag tidigare gjort. Jag har använt det som ett verktyg när det kommer till projektets alla delar så som planering, kodförslag, felsökning, tekniska förklringar, och dokumentation. Jag har främst använt mig av Open AIs Codex. men även av Copilot och googles sökmotors AI. 
